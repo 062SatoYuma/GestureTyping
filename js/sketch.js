@@ -1,15 +1,11 @@
-// ジェスチャーの種類
-// 👍(Thumb_Up), 👎(Thumb_Down), ✌️(Victory), 
-// ☝️(Pointng_Up), ✊(Closed_Fist), 👋(Open_Palm), 
-// 🤟(ILoveYou)
 function getCode(left_gesture, right_gesture) {
   let code_array = {
-    "Thumb_Up": 1,
-    "Thumb_Down": 2,
-    "Victory": 3,
-    "Pointing_Up": 4,
-    "Closed_Fist": 5,
-    "Open_Palm": 6,
+    // "a": 1,
+    // "b": 2,
+    // "c": 3,
+    // "d": 4,
+    // "o": 5,
+    // "l": 6,
   }
   let left_code = code_array[left_gesture];
   let right_code = code_array[right_gesture];
@@ -20,11 +16,7 @@ function getCode(left_gesture, right_gesture) {
 
 function getCharacter(code) {
   const codeToChar = {
-    "11": "a", "12": "b", "13": "c", "14": "d", "15": "e", "16": "f",
-    "21": "g", "22": "h", "23": "i", "24": "j", "25": "k", "26": "l",
-    "31": "m", "32": "n", "33": "o", "34": "p", "35": "q", "36": "r",
-    "41": "s", "42": "t", "43": "u", "44": "v", "45": "w", "46": "x",
-    "51": "y", "52": "z", "53": " ", "54": "backspace"
+  
   };
   return codeToChar[code] || "";
 }
@@ -79,11 +71,47 @@ function setup() {
         right_gesture = results.gestures[0][0].categoryName;
       }
       let code = getCode(left_gesture, right_gesture);
-      let c = getCharacter(code);
+      // 組み合わせに応じて文字を決定
+      const pair = [left_gesture, right_gesture].sort().join(',');
+      const customMapping = {
+        'c,d': 'g',
+        'l,l': 'm',
+        'c,l': 'n',
+        'c,i': 'p',
+        
+        'c,c': 's',
+        'd,d': 'x',
+        'i,j': 'y',
+        'j,j': 'z',
+        'delete,e': 'e',
+        'delete,f': 'f',
+        'delete,h': 'h',
+        'delete,i': 'i',
+        'delete,j': 'j',
+        'delete,k': 'k',
+        'delete,l': 'l',
+
+        'delete,o': 'o',
+ 
+        'delete,r': 'r',
+
+        'delete,t': 't',
+        'delete,u': 'u',
+        'delete,v': 'v',
+        'delete,w': 'w',
+        'delete,delete': 'backspace',
+        'a,delete': 'a',
+        'b,delete': 'b',
+        'c,delete': 'c',
+        'd,delete': 'd',
+        'l,o': 'q',
+        'b,b': ' ',
+      };
+      let c = customMapping[pair] || '';  
 
       let now = millis();
       if (c === lastChar) {
-        if (now - lastCharTime > 1000) {
+        if (now - lastCharTime > 600) {
           // 1秒以上cが同じ値である場合の処理
           typeChar(c);
           lastCharTime = now;
